@@ -8,8 +8,9 @@
     gap: 0.3rem;
     grid-template-columns: 1fr 1fr 1fr;
     grid-template-areas: 
-        "overview overview ."
-        "details . venue"
+        "overview details details"
+        "overview venue venue"
+        ". . ."
         "buy buy buy"
         
 }
@@ -36,7 +37,6 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-area: buy;
     grid-template-areas: 
-
         "select ticket-num price"
         "buy-btn buy-btn buy-btn"
 }
@@ -63,6 +63,27 @@
 
 .event-image
 {
-    height: 100px;
-    width: 100px;
+    height: 10rem;
+    width: 10rem;
+}
+
+.order-actions
+{
+    display: grid;
+    gap: 0.3rem;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: 
+        "del-btn del-btn"
+        "select ticket-num"
+        "upd-btn upd-btn"
+}
+
+#delete-order-btn
+{
+    grid-area: del-btn;
+}
+
+#update-order-btn
+{
+    grid-area: upd-btn;
 }
