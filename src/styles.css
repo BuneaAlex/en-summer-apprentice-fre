@@ -1,3 +1,68 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+.event-card
+{
+    display: grid;
+    gap: 0.3rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-areas: 
+        "overview overview ."
+        "details . venue"
+        "buy buy buy"
+        
+}
+
+.event-overview
+{
+    grid-area: overview;
+}
+
+.event-details
+{
+    grid-area: details;
+}
+
+.event-venue
+{
+    grid-area: venue;
+}
+
+.event-buy
+{
+    display: grid;
+    gap: 0.3rem;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-area: buy;
+    grid-template-areas: 
+
+        "select ticket-num price"
+        "buy-btn buy-btn buy-btn"
+}
+
+#ticket-category
+{
+    grid-area:select;
+}
+
+#ticket-number-select 
+{
+    grid-area: ticket-num;
+}
+
+#price-label
+{
+    grid-area: price;
+}
+
+#buy-ticket-btn
+{
+    grid-area: buy-btn;
+}
+
+.event-image
+{
+    height: 100px;
+    width: 100px;
+}
