@@ -7,7 +7,6 @@ function navigateTo(url) {
 function getHomePageTemplate() {
   return `
    <div id="content" >
-      <img src="./src/assets/Endava.png" alt="summer">
       <div class="events flex items-center justify-center flex-wrap">
       </div>
     </div>
@@ -17,7 +16,9 @@ function getHomePageTemplate() {
 function getOrdersPageTemplate() {
   return `
     <div id="content">
-    <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+      <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+      <div class="orders flex items-center justify-center flex-wrap">
+      </div>
     </div>
   `;
 }
@@ -60,28 +61,74 @@ function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
   // Sample hardcoded event data
+
   const eventData = {
-    id: 1,
-    description: 'Sample event description.',
-    img: 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
-    name: 'Sample Event',
+    eventID: 1,
+    venue: {
+        type: "Stadion",
+        capacity: 1000,
+        location: "Aleea Stadionului 2, Cluj-Napoca"
+    },
+    eventType: "Festival de Muzica",
+    name: "Untold",
+    description: "Muzica Electronica si nu numai",
+    startDate: "2023-07-18 10:00:00",
+    endDate: "2023-07-22 23:59:59",
     ticketCategories: [
-      { id: 1, description: 'General Admission' },
-      { id: 2, description: 'VIP' },
+        {
+            id: 1,
+            description: "Standard",
+            price: 800.0
+        },
+        {
+            id: 5,
+            description: "VIP",
+            price: 1500.0
+        }
     ],
-  };
+    image: "https://play-lh.googleusercontent.com/ypVb0U7-YUPC3JqDyC9vEeeNNWxTxXVPeFZPLwMcVuUXrYFx2xJQxq3jBsyu8Dd1WQQ"
+}
+
   // Create the event card element
   const eventCard = document.createElement('div');
-  eventCard.classList.add('event-card'); 
+  eventCard.classList.add('event-card');
   // Create the event content markup
   const contentMarkup = `
-    <header>
+
+
+      <div class="event-overview">
       <h2 class="event-title text-2xl font-bold">${eventData.name}</h2>
-    </header>
-    <div class="content">
-      <img src="${eventData.img}" alt="${eventData.name}" class="event-image w-full height-200 rounded object-cover mb-4">
+      <img src="${eventData.image}" alt="${eventData.name}" class="event-image">
+      </div>
+
+      <div class="event-details">
       <p class="description text-gray-700">${eventData.description}</p>
-    </div>
+      <p>Event Type: ${eventData.eventType}</p>
+      <p>Date: ${eventData.startDate} - ${eventData.endDate}</p>
+      </div>
+
+      <div class="event-venue">
+        <p>Venue: ${eventData.venue.location}</p>
+        <p>Capacity: ${eventData.venue.capacity}</p>
+        <p>Type: ${eventData.venue.type}</p>
+      </div>
+
+      <div class="event-buy">
+        <select id="ticket-category">
+          <option value="Standard" selected>Standard</option>
+          <option value="VIP">VIP</option>
+        </select>
+
+        <div id="ticket-number-select">
+        <label for="tickets">Number of tickets:</label>
+        <input type="number" id="tickets" name="tickets" value="1" min="1" max="10">
+        </div>
+
+        <p id="price-label">Price:</p>
+
+        <button id="buy-ticket-btn" class="standard-btn">Confirm purchase</button>
+      </div>
+
   `;
 
   eventCard.innerHTML = contentMarkup;
@@ -93,6 +140,83 @@ function renderHomePage() {
 function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getOrdersPageTemplate();
+
+  const orderData =  {
+    orderID: 1,
+    eventID: 1,
+    ticketCategory: {
+        id: 1,
+        description: "Standard",
+        price: 800.0
+    },
+    orderedAt: "2023-03-18 10:00:00",
+    numberOfTickets: 2,
+    totalPrice: 1600.0
+  }
+
+  const eventData = {
+    eventID: 1,
+    venue: {
+        type: "Stadion",
+        capacity: 1000,
+        location: "Aleea Stadionului 2, Cluj-Napoca"
+    },
+    eventType: "Festival de Muzica",
+    name: "Untold",
+    description: "Muzica Electronica si nu numai",
+    startDate: "2023-07-18 10:00:00",
+    endDate: "2023-07-22 23:59:59",
+    ticketCategories: [
+        {
+            id: 1,
+            description: "Standard",
+            price: 800.0
+        },
+        {
+            id: 5,
+            description: "VIP",
+            price: 1500.0
+        }
+    ],
+    image: "https://play-lh.googleusercontent.com/ypVb0U7-YUPC3JqDyC9vEeeNNWxTxXVPeFZPLwMcVuUXrYFx2xJQxq3jBsyu8Dd1WQQ"
+}
+
+  const orderCard = document.createElement('div');
+  orderCard.classList.add('order-card');
+  // Create the event content markup
+  const contentMarkup = `
+      <div class="event-description">
+          <p>Event:${eventData.name}</p>
+          <p>Type:${eventData.eventType}</p>
+          <p>Venue:${eventData.venue.location}</p>
+          <p>Date: ${eventData.startDate} - ${eventData.endDate}</p>
+          <p>Price: ${orderData.totalPrice}$</p>
+      </div>
+      
+      <div class="order-actions">
+
+      <button id="delete-order-btn" class="standard-btn">Delete</button>
+
+        <select id="ticket-category">
+          <option value="Standard" selected>Standard</option>
+          <option value="VIP">VIP</option>
+        </select>
+
+        <div id="ticket-number-select">
+        <label for="tickets">Number of tickets:</label>
+        <input type="number" id="tickets" name="tickets" value="1" min="1" max="10">
+        </div>
+
+        
+        <button id="update-order-btn" class="standard-btn">Update</button>
+      </div>
+
+  `;
+
+  orderCard.innerHTML = contentMarkup;
+  const ordersContainer = document.querySelector('.orders');
+  // Append the event card to the events container
+  ordersContainer.appendChild(orderCard);
 }
 
 // Render content based on URL

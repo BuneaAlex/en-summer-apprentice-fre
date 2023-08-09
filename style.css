@@ -7,6 +7,11 @@ body {
   flex-wrap: wrap;
 }
 
+.orders {
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
 h1 {
   text-align: center;
   font-size: 32px;
@@ -60,11 +65,12 @@ h1 {
   background-color: #de411b;
 }
 
-.add-to-cart-btn {
+.standard-btn {
   background: #de411b;
   margin: 22px auto;
   display: block;
   width: 100%;
+  color: #fff;
 }
 
 .main-content-component {
