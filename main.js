@@ -100,8 +100,6 @@ function addEvents(eventData) {
   eventData.forEach(event => {
     const eventCard = document.createElement('div');
     eventCard.classList.add('event-card');
-
-    eventCard.setAttribute('data-event', JSON.stringify(event));
     
     const contentMarkup = `
 
@@ -121,29 +119,82 @@ function addEvents(eventData) {
         <p>Capacity: ${event.venue.capacity}</p>
         <p>Type: ${event.venue.type}</p>
       </div>
-
-      <div class="event-buy">
-        <select id="ticket-category">
-        ${generateTicketOptions(event)}
-        </select>
-
-        <div id="ticket-number-select">
-        <label for="tickets">Number of tickets:</label>
-        <input type="number" id="tickets" name="tickets" value="1" min="1" max="10">
-        </div>
-
-        <p id="price-label">Price:</p>
-
-        <button id="buy-ticket-btn" class="standard-btn">Confirm purchase</button>
-      </div>
-
   `;
+    const eventBuyDiv = document.createElement('div');
+    eventBuyDiv.classList.add('event-buy');
+
+    const ticketCategorySelect = document.createElement('select');
+
+    const ticketOptions = generateTicketOptions(event);
+    ticketCategorySelect.innerHTML = ticketOptions;
+
+    const ticketNumberSelectDiv = document.createElement('div');
+
+    const ticketsLabel = document.createElement('label');
+    ticketsLabel.setAttribute('for', 'tickets');
+    ticketsLabel.textContent = 'Number of tickets:';
+
+    const ticketsInput = document.createElement('input');
+    ticketsInput.type = 'number';
+    ticketsInput.name = 'tickets';
+    ticketsInput.value = '1';
+    ticketsInput.min = '1';
+    ticketsInput.max = '10';
+
+    const priceLabel = document.createElement('p');
+    priceLabel.textContent = 'Price:';
+
+    const buyButton = document.createElement('button');
+    buyButton.classList.add('standard-btn');
+    buyButton.textContent = 'Confirm purchase';
+
+    // Append elements to their respective parent elements
+    ticketNumberSelectDiv.appendChild(ticketsLabel);
+    ticketNumberSelectDiv.appendChild(ticketsInput);
+
+    eventBuyDiv.appendChild(ticketCategorySelect);
+    eventBuyDiv.appendChild(ticketNumberSelectDiv);
+    eventBuyDiv.appendChild(priceLabel);
+    eventBuyDiv.appendChild(buyButton);
 
     eventCard.innerHTML = contentMarkup;
+    eventCard.appendChild(eventBuyDiv);
     eventsContainer.appendChild(eventCard);
+
+
+    ticketCategorySelect.addEventListener("change",() => {
+
+    });
+
+    ticketsInput.addEventListener("change",() => {
+
+    });
+
+    buyButton.addEventListener("click",async () => {
+      const selectedTicketCategory = ticketCategorySelect.value;
+      const selectedTicketNumber = ticketsInput.value;
+    
+      const ticketList = event['ticketCategories'];
+      let ticketCategoryId = -1;
+      ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) ticketCategoryId = ticket.id;})
+    
+      let order = {
+        eventID: event.eventID,
+        ticketCategoryID: ticketCategoryId,
+        numberOfTickets: parseInt(selectedTicketNumber)
+      }
+    
+      try {
+        await addOrder(order).then(data => alert('Order added successfully:' + JSON.stringify(data)));
+      } catch (error) {
+        console.error('Error adding order:', error);
+      }
+    });
+
+
   });
 
-  eventsContainer.addEventListener('click', handleEventContainerClick);
+  //eventsContainer.addEventListener('click', handleEventContainerClick);
 }
 
 function generateTicketOptions(event) {
@@ -202,25 +253,6 @@ async function handleTicketPurchase(eventObject) {
     
   } catch (error) {
     console.error('Error adding order:', error);
-  }
-}
-
-function handleEventContainerClick(event) {
-  const clickedElement = event.target;
-  const eventCard = clickedElement.closest('.event-card');
-  
-  if (!eventCard) {
-    return;
-  }
-
-  const eventObject = JSON.parse(eventCard.getAttribute('data-event'));
-
-  if (clickedElement.id === 'buy-ticket-btn') {
-    handleTicketPurchase(eventObject);
-  } else if (clickedElement.id === 'ticket-category') {
-    handleTicketCategoryChange(eventObject);
-  } else if (clickedElement.id === 'tickets') {
-    handleTicketNumberChange(eventObject);
   }
 }
 
