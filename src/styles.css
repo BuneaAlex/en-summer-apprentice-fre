@@ -10,7 +10,6 @@
     grid-template-areas: 
         "overview details details"
         "overview venue venue"
-        ". . ."
         "buy buy buy"
         
 }
