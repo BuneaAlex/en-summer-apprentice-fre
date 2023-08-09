@@ -16,8 +16,10 @@ export function addOrder(order){
 
     return fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
         .then(status)
+        .then(json)
         .then(response=>{
-            return response.text();
+            console.log('Request succeeded with JSON response', response);
+            return response;
         }).catch(error=>{
             console.log('Request failed', error);
             return Promise.reject(error);
