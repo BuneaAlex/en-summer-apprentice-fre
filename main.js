@@ -124,8 +124,7 @@ function addEvents(eventData) {
 
       <div class="event-buy">
         <select id="ticket-category">
-          <option value="Standard" selected>Standard</option>
-          <option value="VIP">VIP</option>
+        ${generateTicketOptions(event)}
         </select>
 
         <div id="ticket-number-select">
@@ -145,6 +144,21 @@ function addEvents(eventData) {
   });
 
   eventsContainer.addEventListener('click', handleEventContainerClick);
+}
+
+function generateTicketOptions(event) {
+
+  let optionsArray = [];
+  let eventTickets = event.ticketCategories;
+  eventTickets.forEach(ticket => optionsArray.push(ticket.description));
+
+  let optionsMarkup = '';
+
+  for (const optionValue of optionsArray) {
+    optionsMarkup += `<option value="${optionValue}">${optionValue}</option>`;
+  }
+
+  return optionsMarkup;
 }
 
 function modifyPrice(eventObject) {
@@ -167,7 +181,7 @@ function handleTicketCategoryChange(eventObject) {
   modifyPrice(eventObject);
 }
 
-function handleTicketPurchase(eventObject) {
+async function handleTicketPurchase(eventObject) {
   const ticketCategorySelect = document.getElementById('ticket-category');
   const selectedTicketCategory = ticketCategorySelect.value;
   const ticketsInput = document.getElementById('tickets');
@@ -183,8 +197,12 @@ function handleTicketPurchase(eventObject) {
     numberOfTickets: parseInt(selectedTicketNumber)
   }
 
-  console.log(order);
-  addOrder(order);
+  try {
+    await addOrder(order).then(data => alert('Order added successfully:' + JSON.stringify(data)));
+    
+  } catch (error) {
+    console.error('Error adding order:', error);
+  }
 }
 
 function handleEventContainerClick(event) {
