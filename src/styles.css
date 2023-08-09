@@ -37,25 +37,25 @@
     grid-area: buy;
     grid-template-areas: 
         "select ticket-num price"
-        "buy-btn buy-btn buy-btn"
+        ". buy-btn ."
 }
 
-#ticket-category
+.ticket-category
 {
     grid-area:select;
 }
 
-#ticket-number-select 
+.ticket-number-select 
 {
     grid-area: ticket-num;
 }
 
-#price-label
+.price-label
 {
     grid-area: price;
 }
 
-#buy-ticket-btn
+.buy-ticket-btn
 {
     grid-area: buy-btn;
 }

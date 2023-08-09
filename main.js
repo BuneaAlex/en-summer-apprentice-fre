@@ -124,11 +124,13 @@ function addEvents(eventData) {
     eventBuyDiv.classList.add('event-buy');
 
     const ticketCategorySelect = document.createElement('select');
+    ticketCategorySelect.classList.add('ticket-category');
 
     const ticketOptions = generateTicketOptions(event);
     ticketCategorySelect.innerHTML = ticketOptions;
 
     const ticketNumberSelectDiv = document.createElement('div');
+    ticketNumberSelectDiv.classList.add("ticket-number-select");
 
     const ticketsLabel = document.createElement('label');
     ticketsLabel.setAttribute('for', 'tickets');
@@ -143,9 +145,11 @@ function addEvents(eventData) {
 
     const priceLabel = document.createElement('p');
     priceLabel.textContent = 'Price:-';
+    priceLabel.classList.add("price-label");
 
     const buyButton = document.createElement('button');
     buyButton.classList.add('standard-btn');
+    buyButton.classList.add('buy-ticket-btn');
     buyButton.textContent = 'Confirm purchase';
 
     // Append elements to their respective parent elements
@@ -202,7 +206,6 @@ function addEvents(eventData) {
 
   });
 
-  //eventsContainer.addEventListener('click', handleEventContainerClick);
 }
 
 function generateTicketOptions(event) {
@@ -230,7 +233,6 @@ function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
   priceLabel.innerText = "Price:" + selectedTicketNumber*price;
 }
 
-// Assuming you have a function to fetch eventData using getAllEvents()
 getAllEvents().then(data => {
   eventData = data;
   addEvents(eventData);
@@ -283,7 +285,7 @@ function renderOrdersPage(categories) {
 
   const orderCard = document.createElement('div');
   orderCard.classList.add('order-card');
-  // Create the event content markup
+
   const contentMarkup = `
       <div class="event-description">
           <p>Event:${eventData.name}</p>
@@ -315,7 +317,6 @@ function renderOrdersPage(categories) {
 
   orderCard.innerHTML = contentMarkup;
   const ordersContainer = document.querySelector('.orders');
-  // Append the event card to the events container
   ordersContainer.appendChild(orderCard);
 }
 
