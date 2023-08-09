@@ -23,6 +23,27 @@ function getOrdersPageTemplate() {
   `;
 }
 
+function getLoginPageTemplate() {
+  return `<div>
+  <h2>Login</h2>
+  <form>
+    <input
+      type="text"
+      placeholder="Email"
+      id="email"
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      id="password"
+    />
+    <button type="button" id="loginButton">
+      Login
+    </button>
+  </form>
+</div>`
+}
+
 function setupNavigationEvents() {
   const navLinks = document.querySelectorAll('nav a');
   navLinks.forEach((link) => {
@@ -219,6 +240,56 @@ function renderOrdersPage(categories) {
   ordersContainer.appendChild(orderCard);
 }
 
+function renderLoginPage() {
+  const mainContentDiv = document.querySelector('.main-content-component');
+  mainContentDiv.innerHTML = getLoginPageTemplate();
+  var loginButton = document.getElementById("loginButton");
+  var menuNav = document.getElementsByTagName("nav")[0];
+  if (menuNav) {
+    menuNav.style.display = "none";
+  }
+
+  // Add event listener to the login button
+  loginButton.addEventListener("click", handleLogin);
+
+}
+
+async function handleLogin()
+{
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
+
+  try {
+    const response = await fetch('http://localhost:8080/management/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: email,
+        password: password,
+      }),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Login successful', responseData);
+      navigateTo("/"); 
+      var menuNav = document.getElementsByTagName("nav")[0];
+      if (menuNav) {
+        menuNav.style.display = "";
+      }
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
+
+    } else {
+      console.error('Login error:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
+}
+
 // Render content based on URL
 function renderContent(url) {
   const mainContentDiv = document.querySelector('.main-content-component');
@@ -228,7 +299,10 @@ function renderContent(url) {
     renderHomePage();
   } else if (url === '/orders') {
     renderOrdersPage()
+  }else if(url === '/login') {
+    renderLoginPage();
   }
+  
 }
 
 // Call the setup functions
@@ -236,3 +310,4 @@ setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
 setupInitialPage();
+navigateTo("/login");
