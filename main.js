@@ -1,3 +1,6 @@
+import { data } from "autoprefixer";
+import { getAllEvents } from "./src/api_calls/events_calls";
+
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -77,63 +80,46 @@ function setupPopstateEvent() {
 
 function setupInitialPage() {
   const initialUrl = window.location.pathname;
-  renderContent(initialUrl);
+  renderContent('/login');
 }
+
 
 function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
   // Sample hardcoded event data
 
-  const eventData = {
-    eventID: 1,
-    venue: {
-        type: "Stadion",
-        capacity: 1000,
-        location: "Aleea Stadionului 2, Cluj-Napoca"
-    },
-    eventType: "Festival de Muzica",
-    name: "Untold",
-    description: "Muzica Electronica si nu numai",
-    startDate: "2023-07-18 10:00:00",
-    endDate: "2023-07-22 23:59:59",
-    ticketCategories: [
-        {
-            id: 1,
-            description: "Standard",
-            price: 800.0
-        },
-        {
-            id: 5,
-            description: "VIP",
-            price: 1500.0
-        }
-    ],
-    image: "https://play-lh.googleusercontent.com/ypVb0U7-YUPC3JqDyC9vEeeNNWxTxXVPeFZPLwMcVuUXrYFx2xJQxq3jBsyu8Dd1WQQ"
+  getAllEvents().then(data => {addEvents(data)});
+  
 }
 
-  // Create the event card element
-  const eventCard = document.createElement('div');
+function addEvents(eventData)
+{
+  const eventsContainer = document.querySelector('.events');
+
+  eventData.forEach(event => {
+
+    const eventCard = document.createElement('div');
   eventCard.classList.add('event-card');
   // Create the event content markup
   const contentMarkup = `
 
 
       <div class="event-overview">
-      <h2 class="event-title text-2xl font-bold">${eventData.name}</h2>
-      <img src="${eventData.image}" alt="${eventData.name}" class="event-image">
+      <h2 class="event-title text-2xl font-bold">${event.name}</h2>
+      <img src="${event.image}" alt="${event.name}" class="event-image">
       </div>
 
       <div class="event-details">
-      <p class="description text-gray-700">${eventData.description}</p>
-      <p>Event Type: ${eventData.eventType}</p>
-      <p>Date: ${eventData.startDate} - ${eventData.endDate}</p>
+      <p class="description text-gray-700">${event.description}</p>
+      <p>Event Type: ${event.eventType}</p>
+      <p>Date: ${event.startDate} - ${event.endDate}</p>
       </div>
 
       <div class="event-venue">
-        <p>Venue: ${eventData.venue.location}</p>
-        <p>Capacity: ${eventData.venue.capacity}</p>
-        <p>Type: ${eventData.venue.type}</p>
+        <p>Venue: ${event.venue.location}</p>
+        <p>Capacity: ${event.venue.capacity}</p>
+        <p>Type: ${event.venue.type}</p>
       </div>
 
       <div class="event-buy">
@@ -155,9 +141,17 @@ function renderHomePage() {
   `;
 
   eventCard.innerHTML = contentMarkup;
-  const eventsContainer = document.querySelector('.events');
-  // Append the event card to the events container
   eventsContainer.appendChild(eventCard);
+  });
+
+  
+  var purchase_button = document.getElementById('buy-ticket-btn');
+  purchase_button.addEventListener('click',handleTicketPurchase);
+}
+
+function handleTicketPurchase()
+{
+  
 }
 
 function renderOrdersPage(categories) {
@@ -276,13 +270,14 @@ async function handleLogin()
     if (response.ok) {
       const responseData = await response.json();
       console.log('Login successful', responseData);
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
       navigateTo("/"); 
       var menuNav = document.getElementsByTagName("nav")[0];
       if (menuNav) {
         menuNav.style.display = "";
       }
-      localStorage.setItem('email', email);
-      localStorage.setItem('password', password);
+      
 
     } else {
       console.error('Login error:', response.statusText);
@@ -312,4 +307,4 @@ setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
 setupInitialPage();
-navigateTo("/login");
+//navigateTo("/login");
