@@ -163,11 +163,11 @@ function addEvents(eventData) {
 
 
     ticketCategorySelect.addEventListener("change",() => {
-
+      modifyPrice(event,ticketCategorySelect,ticketsInput,priceLabel);
     });
 
     ticketsInput.addEventListener("change",() => {
-
+      modifyPrice(event,ticketCategorySelect,ticketsInput,priceLabel);
     });
 
     buyButton.addEventListener("click",async () => {
@@ -212,48 +212,14 @@ function generateTicketOptions(event) {
   return optionsMarkup;
 }
 
-function modifyPrice(eventObject) {
-  const ticketCategorySelect = document.getElementById('ticket-category');
-  const priceLabel = document.getElementById('price-label');
+function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
+  
   const selectedTicketCategory = ticketCategorySelect.value;
-  const ticketsInput = document.getElementById('tickets');
   const selectedTicketNumber = ticketsInput.value;
   const ticketList = eventObject['ticketCategories'];
   let price = 0;
   ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) price = ticket.price;})
   priceLabel.innerText = "Price:" + selectedTicketNumber*price;
-}
-
-function handleTicketNumberChange(eventObject) {
-  modifyPrice(eventObject);
-}
-
-function handleTicketCategoryChange(eventObject) {
-  modifyPrice(eventObject);
-}
-
-async function handleTicketPurchase(eventObject) {
-  const ticketCategorySelect = document.getElementById('ticket-category');
-  const selectedTicketCategory = ticketCategorySelect.value;
-  const ticketsInput = document.getElementById('tickets');
-  const selectedTicketNumber = ticketsInput.value;
-
-  const ticketList = eventObject['ticketCategories'];
-  let ticketCategoryId = -1;
-  ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) ticketCategoryId = ticket.id;})
-
-  let order = {
-    eventID: eventObject.eventID,
-    ticketCategoryID: ticketCategoryId,
-    numberOfTickets: parseInt(selectedTicketNumber)
-  }
-
-  try {
-    await addOrder(order).then(data => alert('Order added successfully:' + JSON.stringify(data)));
-    
-  } catch (error) {
-    console.error('Error adding order:', error);
-  }
 }
 
 // Assuming you have a function to fetch eventData using getAllEvents()
