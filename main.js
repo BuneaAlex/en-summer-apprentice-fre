@@ -137,12 +137,12 @@ function addEvents(eventData) {
     const ticketsInput = document.createElement('input');
     ticketsInput.type = 'number';
     ticketsInput.name = 'tickets';
-    ticketsInput.value = '1';
+    ticketsInput.value = '0';
     ticketsInput.min = '1';
     ticketsInput.max = '10';
 
     const priceLabel = document.createElement('p');
-    priceLabel.textContent = 'Price:';
+    priceLabel.textContent = 'Price:-';
 
     const buyButton = document.createElement('button');
     buyButton.classList.add('standard-btn');
@@ -185,7 +185,15 @@ function addEvents(eventData) {
       }
     
       try {
-        await addOrder(order).then(data => alert('Order added successfully:' + JSON.stringify(data)));
+        await addOrder(order)
+        .then(data => 
+        {
+          ticketsInput.value = 0;
+          priceLabel.innerText = "Price:-";
+          alert('Order added successfully:' + JSON.stringify(data))
+        }
+          );
+          
       } catch (error) {
         console.error('Error adding order:', error);
       }
