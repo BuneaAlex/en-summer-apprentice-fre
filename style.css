@@ -69,8 +69,9 @@ h1 {
   background: #de411b;
   margin: 22px auto;
   display: block;
-  width: 100%;
   color: #fff;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 .main-content-component {

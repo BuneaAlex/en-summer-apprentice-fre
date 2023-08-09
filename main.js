@@ -25,8 +25,9 @@ function getOrdersPageTemplate() {
 
 function getLoginPageTemplate() {
   return `<div>
-  <h2>Login</h2>
   <form>
+    <div class="login-container">
+    <h2>Login form</h2>
     <input
       type="text"
       placeholder="Email"
@@ -37,9 +38,10 @@ function getLoginPageTemplate() {
       placeholder="Password"
       id="password"
     />
-    <button type="button" id="loginButton">
+    <button type="button" class="standard-btn" id="loginButton">
       Login
     </button>
+    </div>
   </form>
 </div>`
 }
