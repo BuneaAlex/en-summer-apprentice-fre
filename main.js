@@ -1,5 +1,6 @@
 import { data } from "autoprefixer";
 import { getAllEvents } from "./src/api_calls/events_calls";
+import { addOrder } from "./src/api_calls/orders_calls";
 
 // Navigate to a specific URL
 function navigateTo(url) {
@@ -93,17 +94,16 @@ function renderHomePage() {
   
 }
 
-function addEvents(eventData)
-{
+function addEvents(eventData) {
   const eventsContainer = document.querySelector('.events');
 
   eventData.forEach(event => {
-
     const eventCard = document.createElement('div');
-  eventCard.classList.add('event-card');
-  // Create the event content markup
-  const contentMarkup = `
+    eventCard.classList.add('event-card');
 
+    eventCard.setAttribute('data-event', JSON.stringify(event));
+    
+    const contentMarkup = `
 
       <div class="event-overview">
       <h2 class="event-title text-2xl font-bold">${event.name}</h2>
@@ -140,19 +140,78 @@ function addEvents(eventData)
 
   `;
 
-  eventCard.innerHTML = contentMarkup;
-  eventsContainer.appendChild(eventCard);
+    eventCard.innerHTML = contentMarkup;
+    eventsContainer.appendChild(eventCard);
   });
 
-  
-  var purchase_button = document.getElementById('buy-ticket-btn');
-  purchase_button.addEventListener('click',handleTicketPurchase);
+  eventsContainer.addEventListener('click', handleEventContainerClick);
 }
 
-function handleTicketPurchase()
-{
-  
+function modifyPrice(eventObject) {
+  const ticketCategorySelect = document.getElementById('ticket-category');
+  const priceLabel = document.getElementById('price-label');
+  const selectedTicketCategory = ticketCategorySelect.value;
+  const ticketsInput = document.getElementById('tickets');
+  const selectedTicketNumber = ticketsInput.value;
+  const ticketList = eventObject['ticketCategories'];
+  let price = 0;
+  ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) price = ticket.price;})
+  priceLabel.innerText = "Price:" + selectedTicketNumber*price;
 }
+
+function handleTicketNumberChange(eventObject) {
+  modifyPrice(eventObject);
+}
+
+function handleTicketCategoryChange(eventObject) {
+  modifyPrice(eventObject);
+}
+
+function handleTicketPurchase(eventObject) {
+  const ticketCategorySelect = document.getElementById('ticket-category');
+  const selectedTicketCategory = ticketCategorySelect.value;
+  const ticketsInput = document.getElementById('tickets');
+  const selectedTicketNumber = ticketsInput.value;
+
+  const ticketList = eventObject['ticketCategories'];
+  let ticketCategoryId = -1;
+  ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) ticketCategoryId = ticket.id;})
+
+  let order = {
+    eventID: eventObject.eventID,
+    ticketCategoryID: ticketCategoryId,
+    numberOfTickets: parseInt(selectedTicketNumber)
+  }
+
+  console.log(order);
+  addOrder(order);
+}
+
+function handleEventContainerClick(event) {
+  const clickedElement = event.target;
+  const eventCard = clickedElement.closest('.event-card');
+  
+  if (!eventCard) {
+    return;
+  }
+
+  const eventObject = JSON.parse(eventCard.getAttribute('data-event'));
+
+  if (clickedElement.id === 'buy-ticket-btn') {
+    handleTicketPurchase(eventObject);
+  } else if (clickedElement.id === 'ticket-category') {
+    handleTicketCategoryChange(eventObject);
+  } else if (clickedElement.id === 'tickets') {
+    handleTicketNumberChange(eventObject);
+  }
+}
+
+// Assuming you have a function to fetch eventData using getAllEvents()
+getAllEvents().then(data => {
+  eventData = data;
+  addEvents(eventData);
+});
+
 
 function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
