@@ -1,3 +1,6 @@
+import { getAllEvents } from "./src/api_calls/events_calls";
+import { addOrder } from "./src/api_calls/orders_calls";
+
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -21,6 +24,29 @@ function getOrdersPageTemplate() {
       </div>
     </div>
   `;
+}
+
+function getLoginPageTemplate() {
+  return `<div>
+  <form>
+    <div class="login-container">
+    <h2>Login form</h2>
+    <input
+      type="text"
+      placeholder="Email"
+      id="email"
+    />
+    <input
+      type="password"
+      placeholder="Password"
+      id="password"
+    />
+    <button type="button" class="standard-btn" id="loginButton">
+      Login
+    </button>
+    </div>
+  </form>
+</div>`
 }
 
 function setupNavigationEvents() {
@@ -54,88 +80,163 @@ function setupPopstateEvent() {
 
 function setupInitialPage() {
   const initialUrl = window.location.pathname;
-  renderContent(initialUrl);
+  renderContent('/login');
 }
+
 
 function renderHomePage() {
   const mainContentDiv = document.querySelector('.main-content-component');
   mainContentDiv.innerHTML = getHomePageTemplate();
   // Sample hardcoded event data
 
-  const eventData = {
-    eventID: 1,
-    venue: {
-        type: "Stadion",
-        capacity: 1000,
-        location: "Aleea Stadionului 2, Cluj-Napoca"
-    },
-    eventType: "Festival de Muzica",
-    name: "Untold",
-    description: "Muzica Electronica si nu numai",
-    startDate: "2023-07-18 10:00:00",
-    endDate: "2023-07-22 23:59:59",
-    ticketCategories: [
-        {
-            id: 1,
-            description: "Standard",
-            price: 800.0
-        },
-        {
-            id: 5,
-            description: "VIP",
-            price: 1500.0
-        }
-    ],
-    image: "https://play-lh.googleusercontent.com/ypVb0U7-YUPC3JqDyC9vEeeNNWxTxXVPeFZPLwMcVuUXrYFx2xJQxq3jBsyu8Dd1WQQ"
+  getAllEvents().then(data => {addEvents(data)});
+  
 }
 
-  // Create the event card element
-  const eventCard = document.createElement('div');
-  eventCard.classList.add('event-card');
-  // Create the event content markup
-  const contentMarkup = `
+function addEvents(eventData) {
+  const eventsContainer = document.querySelector('.events');
 
+  eventData.forEach(event => {
+    const eventCard = document.createElement('div');
+    eventCard.classList.add('event-card');
+    
+    const contentMarkup = `
 
       <div class="event-overview">
-      <h2 class="event-title text-2xl font-bold">${eventData.name}</h2>
-      <img src="${eventData.image}" alt="${eventData.name}" class="event-image">
+      <h2 class="event-title text-2xl font-bold">${event.name}</h2>
+      <img src="${event.image}" alt="${event.name}" class="event-image">
       </div>
 
       <div class="event-details">
-      <p class="description text-gray-700">${eventData.description}</p>
-      <p>Event Type: ${eventData.eventType}</p>
-      <p>Date: ${eventData.startDate} - ${eventData.endDate}</p>
+      <p class="description text-gray-700">${event.description}</p>
+      <p>Event Type: ${event.eventType}</p>
+      <p>Date: ${event.startDate} - ${event.endDate}</p>
       </div>
 
       <div class="event-venue">
-        <p>Venue: ${eventData.venue.location}</p>
-        <p>Capacity: ${eventData.venue.capacity}</p>
-        <p>Type: ${eventData.venue.type}</p>
+        <p>Venue: ${event.venue.location}</p>
+        <p>Capacity: ${event.venue.capacity}</p>
+        <p>Type: ${event.venue.type}</p>
       </div>
-
-      <div class="event-buy">
-        <select id="ticket-category">
-          <option value="Standard" selected>Standard</option>
-          <option value="VIP">VIP</option>
-        </select>
-
-        <div id="ticket-number-select">
-        <label for="tickets">Number of tickets:</label>
-        <input type="number" id="tickets" name="tickets" value="1" min="1" max="10">
-        </div>
-
-        <p id="price-label">Price:</p>
-
-        <button id="buy-ticket-btn" class="standard-btn">Confirm purchase</button>
-      </div>
-
   `;
+    const eventBuyDiv = document.createElement('div');
+    eventBuyDiv.classList.add('event-buy');
 
-  eventCard.innerHTML = contentMarkup;
-  const eventsContainer = document.querySelector('.events');
-  // Append the event card to the events container
-  eventsContainer.appendChild(eventCard);
+    const ticketCategorySelect = document.createElement('select');
+    ticketCategorySelect.classList.add('ticket-category');
+
+    const ticketOptions = generateTicketOptions(event);
+    ticketCategorySelect.innerHTML = ticketOptions;
+
+    const ticketNumberSelectDiv = document.createElement('div');
+    ticketNumberSelectDiv.classList.add("ticket-number-select");
+
+    const ticketsLabel = document.createElement('label');
+    ticketsLabel.setAttribute('for', 'tickets');
+    ticketsLabel.textContent = 'Number of tickets:';
+
+    const ticketsInput = document.createElement('input');
+    ticketsInput.type = 'number';
+    ticketsInput.name = 'tickets';
+    ticketsInput.value = '0';
+    ticketsInput.min = '1';
+    ticketsInput.max = '10';
+
+    const priceLabel = document.createElement('p');
+    priceLabel.textContent = 'Price:-';
+    priceLabel.classList.add("price-label");
+
+    const buyButton = document.createElement('button');
+    buyButton.classList.add('standard-btn');
+    buyButton.classList.add('buy-ticket-btn');
+    buyButton.textContent = 'Confirm purchase';
+
+    // Append elements to their respective parent elements
+    ticketNumberSelectDiv.appendChild(ticketsLabel);
+    ticketNumberSelectDiv.appendChild(ticketsInput);
+
+    eventBuyDiv.appendChild(ticketCategorySelect);
+    eventBuyDiv.appendChild(ticketNumberSelectDiv);
+    eventBuyDiv.appendChild(priceLabel);
+    eventBuyDiv.appendChild(buyButton);
+
+    eventCard.innerHTML = contentMarkup;
+    eventCard.appendChild(eventBuyDiv);
+    eventsContainer.appendChild(eventCard);
+
+
+    ticketCategorySelect.addEventListener("change",() => {
+      modifyPrice(event,ticketCategorySelect,ticketsInput,priceLabel);
+    });
+
+    ticketsInput.addEventListener("change",() => {
+      modifyPrice(event,ticketCategorySelect,ticketsInput,priceLabel);
+    });
+
+    buyButton.addEventListener("click",async () => {
+      const selectedTicketCategory = ticketCategorySelect.value;
+      const selectedTicketNumber = ticketsInput.value;
+    
+      const ticketList = event['ticketCategories'];
+      let ticketCategoryId = -1;
+      ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) ticketCategoryId = ticket.id;})
+    
+      let order = {
+        eventID: event.eventID,
+        ticketCategoryID: ticketCategoryId,
+        numberOfTickets: parseInt(selectedTicketNumber)
+      }
+    
+      try {
+        await addOrder(order)
+        .then(data => 
+        {
+          ticketsInput.value = 0;
+          priceLabel.innerText = "Price:-";
+          alert('Order added successfully:' + JSON.stringify(data))
+        }
+          );
+          
+      } catch (error) {
+        console.error('Error adding order:', error);
+      }
+    });
+
+
+  });
+
 }
+
+function generateTicketOptions(event) {
+
+  let optionsArray = [];
+  let eventTickets = event.ticketCategories;
+  eventTickets.forEach(ticket => optionsArray.push(ticket.description));
+
+  let optionsMarkup = '';
+
+  for (const optionValue of optionsArray) {
+    optionsMarkup += `<option value="${optionValue}">${optionValue}</option>`;
+  }
+
+  return optionsMarkup;
+}
+
+function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
+  
+  const selectedTicketCategory = ticketCategorySelect.value;
+  const selectedTicketNumber = ticketsInput.value;
+  const ticketList = eventObject['ticketCategories'];
+  let price = 0;
+  ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) price = ticket.price;})
+  priceLabel.innerText = "Price:" + selectedTicketNumber*price;
+}
+
+getAllEvents().then(data => {
+  eventData = data;
+  addEvents(eventData);
+});
+
 
 function renderOrdersPage(categories) {
   const mainContentDiv = document.querySelector('.main-content-component');
@@ -183,7 +284,7 @@ function renderOrdersPage(categories) {
 
   const orderCard = document.createElement('div');
   orderCard.classList.add('order-card');
-  // Create the event content markup
+
   const contentMarkup = `
       <div class="event-description">
           <p>Event:${eventData.name}</p>
@@ -215,8 +316,58 @@ function renderOrdersPage(categories) {
 
   orderCard.innerHTML = contentMarkup;
   const ordersContainer = document.querySelector('.orders');
-  // Append the event card to the events container
   ordersContainer.appendChild(orderCard);
+}
+
+function renderLoginPage() {
+  const mainContentDiv = document.querySelector('.main-content-component');
+  mainContentDiv.innerHTML = getLoginPageTemplate();
+  var loginButton = document.getElementById("loginButton");
+  var menuNav = document.getElementsByTagName("nav")[0];
+  if (menuNav) {
+    menuNav.style.display = "none";
+  }
+
+  // Add event listener to the login button
+  loginButton.addEventListener("click", handleLogin);
+
+}
+
+async function handleLogin()
+{
+  var email = document.getElementById("email").value;
+  var password = document.getElementById("password").value;
+
+  try {
+    const response = await fetch('http://localhost:8080/management/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username: email,
+        password: password,
+      }),
+    });
+
+    if (response.ok) {
+      const responseData = await response.json();
+      console.log('Login successful', responseData);
+      localStorage.setItem('email', email);
+      localStorage.setItem('password', password);
+      navigateTo("/"); 
+      var menuNav = document.getElementsByTagName("nav")[0];
+      if (menuNav) {
+        menuNav.style.display = "";
+      }
+      
+
+    } else {
+      console.error('Login error:', response.statusText);
+    }
+  } catch (error) {
+    console.error('Fetch error:', error);
+  }
 }
 
 // Render content based on URL
@@ -228,7 +379,10 @@ function renderContent(url) {
     renderHomePage();
   } else if (url === '/orders') {
     renderOrdersPage()
+  }else if(url === '/login') {
+    renderLoginPage();
   }
+  
 }
 
 // Call the setup functions
@@ -236,3 +390,4 @@ setupNavigationEvents();
 setupMobileMenuEvent();
 setupPopstateEvent();
 setupInitialPage();
+//navigateTo("/login");
