@@ -1,4 +1,4 @@
-import { JAVA_SERVER_BASE_URL, JAVA_SERVER_ORDERS_BASE_URL} from "./consts";
+import { JAVA_SERVER_ORDERS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
 export function addOrder(order){

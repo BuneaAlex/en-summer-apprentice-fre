@@ -1,4 +1,3 @@
-import { data } from "autoprefixer";
 import { getAllEvents } from "./src/api_calls/events_calls";
 import { addOrder } from "./src/api_calls/orders_calls";
 

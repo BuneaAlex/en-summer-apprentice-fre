@@ -1,4 +1,4 @@
-import { JAVA_SERVER_BASE_URL, JAVA_SERVER_EVENTS_BASE_URL} from "./consts";
+import { JAVA_SERVER_EVENTS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
 export function getAllEvents() 
