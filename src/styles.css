@@ -72,17 +72,17 @@
     gap: 0.3rem;
     grid-template-columns: 1fr 1fr;
     grid-template-areas: 
-        "del-btn del-btn"
         "select ticket-num"
-        "upd-btn upd-btn"
+        "del-btn upd-btn"
+        
 }
 
-#delete-order-btn
+.delete-order-btn
 {
     grid-area: del-btn;
 }
 
-#update-order-btn
+.update-order-btn
 {
     grid-area: upd-btn;
 }

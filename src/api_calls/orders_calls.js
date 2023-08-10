@@ -1,7 +1,7 @@
 import { JAVA_SERVER_ORDERS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
-export function addOrder(order){
+export async function addOrder(order){
     console.log('inainte de fetch post'+JSON.stringify(order));
 
     let headers = new Headers();
@@ -14,7 +14,7 @@ export function addOrder(order){
         mode: 'cors',
         body: JSON.stringify(order)};
 
-    return fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
+    return await fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
         .then(status)
         .then(json)
         .then(response=>{
@@ -25,3 +25,29 @@ export function addOrder(order){
             return Promise.reject(error);
         });
 }
+
+
+export async function getAllOrders() 
+{
+    
+    var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    authenticationHeaderSetter(headers);
+
+    let options = { method: 'GET',
+    headers: headers,
+     mode: 'cors'
+    };
+
+    return await fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
+        .then(status)
+        .then(json)
+        .then(data=> {
+            console.log('Request succeeded with JSON response', data);
+            return data;
+        }).catch(error=>{
+            console.log('Request failed', error);
+            return Promise.reject(error);
+        });
+}
+
