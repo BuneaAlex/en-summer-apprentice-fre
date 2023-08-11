@@ -3,7 +3,8 @@ import { getAllOrders } from "./src/api_calls/orders_calls";
 import { addLoader, removeLoader, removeLoaderForLogin } from "./src/components/loader";
 import { useStyles } from "./src/components/styles";
 import { addOrders } from "./ordersPage";
-import { addEvents } from "./eventsPage";
+import { addEvents, eventNameFilterSetUp, eventTypeSelectsListenerSetUp } from "./eventsPage";
+import { eventTypeSelectsSetUp } from "./helperFunctions";
 
 const loaderTime = 1000;
 let events = [];
@@ -16,12 +17,19 @@ function navigateTo(url) {
 function getHomePageTemplate() {
   return `
    <div id="content" >
-    <div class="event_filters">
+    <div class="event-filters">
       <input
         type="text"
         placeholder="Filter by event name"
         id="filter_event_name"
       />
+      <select id="event-type-select">
+
+      </select>
+
+      <select id="venue-type-select">
+
+      </select>
     </div>
       <div class="events flex items-center justify-center flex-wrap">
       </div>
@@ -106,37 +114,15 @@ function renderHomePage() {
 
   getAllEvents()
   .then(data => {
-    setUpFilterEvents(data);
+    eventTypeSelectsSetUp(data);
+    eventNameFilterSetUp(data);
     addEvents(data)
   }).finally(
     setTimeout(() => {
     removeLoader();
   },loaderTime));
 
-  
-  
-}
-
-export function setUpFilterEvents(events)
-{
-  const filterField = document.getElementById('filter_event_name');
-
-  if(filterField)
-  {
-      const filterInterval = 500;
-      filterField.addEventListener('keyup',() => {
-
-        setTimeout( () => {
-          const filterValue = filterField.value;
-
-          if(filterValue !== undefined && events !== undefined)
-          {
-              const filteredEvents = events.filter((event) => event.name.toLowerCase().includes(filterValue.toLowerCase()));
-              addEvents(filteredEvents);
-          }
-        }, filterInterval);
-      })
-  }
+  eventTypeSelectsListenerSetUp();
 }
 
 

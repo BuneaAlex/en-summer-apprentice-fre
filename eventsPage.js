@@ -1,7 +1,7 @@
 import { addOrder } from "./src/api_calls/orders_calls";
-import { generateTicketOptions } from './helperFunctions';
+import { generateTicketOptions, eventTypeSelectsReset } from './helperFunctions';
 import { useStyles } from "./src/components/styles";
-import { setUpFilterEvents } from "./main";
+import { getEventsFiltered } from "./src/api_calls/events_calls";
 
 export function addEvents(eventData) {
     const eventsContainer = document.querySelector('.events');
@@ -118,13 +118,69 @@ export function addEvents(eventData) {
   }
   
   
-  function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
+function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
+  
+  const selectedTicketCategory = ticketCategorySelect.value;
+  const selectedTicketNumber = ticketsInput.value;
+  const ticketList = eventObject['ticketCategories'];
+  let price = 0;
+  ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) price = ticket.price;})
+  priceLabel.innerText = "Price:" + selectedTicketNumber*price;
+}
+
+export function filterEventByTypes()
+{
+    const eventTypeSelect = document.getElementById('event-type-select');
+    const venueTypeSelect = document.getElementById('venue-type-select');
+
+    const eventType = eventTypeSelect.value;
+    const venueType = venueTypeSelect.value;
+
+    getEventsFiltered(eventType,venueType)
+    .then(data => addEvents(data)) 
+}
+
+export function eventTypeSelectsListenerSetUp()
+{
+  const eventTypeSelect = document.getElementById('event-type-select');
+  const venueTypeSelect = document.getElementById('venue-type-select');
+
+  eventTypeSelect.addEventListener("change",() => {
+    setTimeout(() => {
+      filterEventByTypes();
+    },500)
     
-    const selectedTicketCategory = ticketCategorySelect.value;
-    const selectedTicketNumber = ticketsInput.value;
-    const ticketList = eventObject['ticketCategories'];
-    let price = 0;
-    ticketList.forEach(ticket => {if(ticket.description === selectedTicketCategory) price = ticket.price;})
-    priceLabel.innerText = "Price:" + selectedTicketNumber*price;
+  });
+
+  venueTypeSelect.addEventListener("change",() => {
+    setTimeout(() => {
+      filterEventByTypes();
+    },500)
+  });
+}
+
+export function eventNameFilterSetUp(events)
+{
+  const filterField = document.getElementById('filter_event_name');
+
+  if(filterField)
+  {
+      const filterInterval = 500;
+      filterField.addEventListener('keyup',() => {
+
+        eventTypeSelectsReset();
+
+        setTimeout( () => {
+          const filterValue = filterField.value;
+
+          if(filterValue !== undefined && events !== undefined)
+          {
+              const filteredEvents = events.filter((event) => event.name.toLowerCase().includes(filterValue.toLowerCase()));
+              addEvents(filteredEvents);
+          }
+        }, filterInterval);
+      })
   }
+}
+
   

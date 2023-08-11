@@ -97,11 +97,16 @@
     margin-top: 5rem;
 }
 
-.event_filters
+.event-filters
 {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
     justify-content: center;
     margin-bottom: 1rem;
+}
+
+.event-filters > *
+{
+    margin-right: 10px;
 }
