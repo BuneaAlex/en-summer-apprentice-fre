@@ -6,6 +6,7 @@ import { addOrders } from "./ordersPage";
 import { addEvents } from "./eventsPage";
 
 const loaderTime = 1000;
+let events = [];
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -15,10 +16,18 @@ function navigateTo(url) {
 function getHomePageTemplate() {
   return `
    <div id="content" >
+    <div class="event_filters">
+      <input
+        type="text"
+        placeholder="Filter by event name"
+        id="filter_event_name"
+      />
+    </div>
       <div class="events flex items-center justify-center flex-wrap">
       </div>
     </div>
   `;
+  
 }
 
 function getOrdersPageTemplate() {
@@ -97,12 +106,37 @@ function renderHomePage() {
 
   getAllEvents()
   .then(data => {
+    setUpFilterEvents(data);
     addEvents(data)
   }).finally(
     setTimeout(() => {
     removeLoader();
   },loaderTime));
+
   
+  
+}
+
+export function setUpFilterEvents(events)
+{
+  const filterField = document.getElementById('filter_event_name');
+
+  if(filterField)
+  {
+      const filterInterval = 500;
+      filterField.addEventListener('keyup',() => {
+
+        setTimeout( () => {
+          const filterValue = filterField.value;
+
+          if(filterValue !== undefined && events !== undefined)
+          {
+              const filteredEvents = events.filter((event) => event.name.toLowerCase().includes(filterValue.toLowerCase()));
+              addEvents(filteredEvents);
+          }
+        }, filterInterval);
+      })
+  }
 }
 
 

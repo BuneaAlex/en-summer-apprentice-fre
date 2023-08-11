@@ -1,10 +1,11 @@
 import { addOrder } from "./src/api_calls/orders_calls";
 import { generateTicketOptions } from './helperFunctions';
 import { useStyles } from "./src/components/styles";
+import { setUpFilterEvents } from "./main";
 
 export function addEvents(eventData) {
     const eventsContainer = document.querySelector('.events');
-  
+    eventsContainer.innerHTML = '';
     eventData.forEach(event => {
       const eventCard = document.createElement('div');
       eventCard.classList.add('event-card','rounded-lg', 'bg-gray-200', 'p-4','m-4');
@@ -115,7 +116,6 @@ export function addEvents(eventData) {
     });
   
   }
-  
   
   
   function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
