@@ -1,12 +1,10 @@
-function swapElements(element1, element2) {
-    const parent = element1.parentNode;
-  
-    // Insert element2 before element1
-    parent.insertBefore(element2, element1);
-  
-    // Move element1 to the position of element2 (which is now before element1)
-    parent.insertBefore(element1, element2.nextSibling);
-  }
+function swapElements(el1, el2) {
+    let prev1 = el1.previousSibling;
+    let prev2 = el2.previousSibling;
+
+    prev1.after(el2);
+    prev2.after(el1);
+}
   
 function sortByCriteria(criteria, ascending = true) {
     return (elementA, elementB) => {

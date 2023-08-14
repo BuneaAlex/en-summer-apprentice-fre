@@ -155,8 +155,8 @@ function addEventDescription(eventData,order)
 
 export function sortButtonsSetUp()
 {
-    var sortOrdersByPriceAscButton = document.getElementById("sort-price-order");
-    sortOrdersByPriceAscButton.addEventListener('click',() => {
+    var sortOrdersByPriceButton = document.getElementById("sort-price-order");
+    sortOrdersByPriceButton.addEventListener('click',() => {
       const sortAscIcon = document.getElementById('sort-asc-price-order');
       const sortDescIcon = document.getElementById('sort-desc-price-order');
 
@@ -173,6 +173,27 @@ export function sortButtonsSetUp()
       sortDescIcon.classList.toggle('hidden-icon');
       
     })
+
+
+    var sortOrdersByNameButton = document.getElementById("sort-name-order");
+    sortOrdersByNameButton.addEventListener('click',() => {
+      const sortAscIcon = document.getElementById('sort-asc-name-order');
+      const sortDescIcon = document.getElementById('sort-desc-name-order');
+
+      if(!sortAscIcon.classList.contains('hidden-icon'))
+      {
+          sortOrdersByName(true);
+      }
+      else
+      {
+          sortOrdersByName(false);
+      }
+
+      sortAscIcon.classList.toggle('hidden-icon');
+      sortDescIcon.classList.toggle('hidden-icon');
+      
+    })
+
 }
 
 function getPrice(orderCard)
@@ -189,5 +210,22 @@ function sortOrdersByPrice(ascending)
   const orderCards = document.getElementsByClassName('order-card');
   const orderCardsArray = [...orderCards];
   genericSortElements(orderCardsArray,getPrice,ascending);
+}
+
+
+function getName(orderCard)
+{
+  const eventDescription = orderCard.querySelector('.event-description');
+  const nameParagraph = eventDescription.querySelector('p:nth-child(1)');
+  const nameString = nameParagraph.innerHTML;
+  const nameValue = nameString.split(':')[1];
+  return nameValue;
+}
+
+function sortOrdersByName(ascending)
+{
+  const orderCards = document.getElementsByClassName('order-card');
+  const orderCardsArray = [...orderCards];
+  genericSortElements(orderCardsArray,getName,ascending);
 }
 
