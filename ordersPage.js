@@ -1,7 +1,7 @@
 import { useStyles } from "./src/components/styles";
 import { getEventById } from "./src/api_calls/events_calls";
 import { generateTicketOptions } from './helperFunctions';
-import { DeleteOrder } from "./src/api_calls/orders_calls";
+import { DeleteOrder, UpdateOrder } from "./src/api_calls/orders_calls";
 
 export function addOrders(orderData)
 {
@@ -86,6 +86,25 @@ export function addOrders(orderData)
       ordersContainer.removeChild(orderCard);
     });
 
+    updateButton.addEventListener("click", () => {
+      const numberOfTickets = ticketsInput.value;
+      const ticketCategory = ticketCategorySelect.value;
+      const patchRequestBody = {
+        numberOfTickets: numberOfTickets,
+        ticketType: ticketCategory
+      }
+      UpdateOrder(order.orderID,patchRequestBody)
+      .then(data => {
+        console.log("updated",data)
+        ticketsInput.setAttribute('data-initial-value', data.numberOfTickets);
+        ticketCategorySelect.setAttribute('data-initial-value', data.ticketCategory.description);
+        disableButton(updateButton);
+        var priceParagraph = eventDescription.querySelector('p:nth-child(5)');
+        priceParagraph.innerHTML = "Price:" +  data.totalPrice + "$";
+        toastr.success('Success!');
+      });
+    });
+
   });
   
 }
@@ -99,15 +118,25 @@ function orderChangeHandler(ticketCategorySelect,ticketsInput,updateButton)
 
       if(initialValueSelect !== currentValueSelect || initialValueTicketsInput !== currentValueTicketsInput)
       {
-        updateButton.classList.remove(...useStyles('disabled_button'));
-        updateButton.classList.add(...useStyles('standard_button'));
-        updateButton.disabled = false;
+        enableButton(updateButton);
       }
       else{
-        updateButton.classList.remove(...useStyles('standard_button'));
-        updateButton.classList.add(...useStyles('disabled_button'));
-        updateButton.disabled = true;
+        disableButton(updateButton);
       }
+}
+
+function disableButton(button)
+{
+    button.classList.remove(...useStyles('standard_button'));
+    button.classList.add(...useStyles('disabled_button'))
+    button.disabled = true;
+}
+
+function enableButton(button)
+{
+    button.classList.remove(...useStyles('disabled_button'));
+    button.classList.add(...useStyles('standard_button'));
+    button.disabled = false;
 }
 
 function addEventDescription(eventData,order)

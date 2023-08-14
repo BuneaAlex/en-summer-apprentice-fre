@@ -76,3 +76,28 @@ export function DeleteOrder(id){
 
 }
 
+export function UpdateOrder(id,patchRequestBody){
+    console.log('inainte de fetch post'+JSON.stringify(patchRequestBody));
+
+    let headers = new Headers();
+    headers.append("Accept", "application/json");
+    headers.append("Content-Type","application/json");
+
+    let options = { method: 'PATCH',
+        headers: headers,
+        mode: 'cors',
+        body: JSON.stringify(patchRequestBody)};
+
+    const url=NET_SERVER_ORDERS_BASE_URL+'/'+id;
+
+    return fetch(url,options)
+        .then(status)
+        .then(json)
+        .then(response=>{
+            return response;
+        }).catch(error=>{
+            console.log('Request failed', error);
+            return Promise.reject(error);
+        });
+}
+
