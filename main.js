@@ -2,7 +2,7 @@ import { getAllEvents } from "./src/api_calls/events_calls";
 import { getAllOrders } from "./src/api_calls/orders_calls";
 import { addLoader, removeLoader, removeLoaderForLogin } from "./src/components/loader";
 import { useStyles } from "./src/components/styles";
-import { addOrders } from "./ordersPage";
+import { addOrders, sortButtonsSetUp } from "./ordersPage";
 import { addEvents, eventNameFilterSetUp, eventTypeSelectsListenerSetUp } from "./eventsPage";
 import { eventTypeSelectsSetUp } from "./helperFunctions";
 
@@ -42,6 +42,13 @@ function getOrdersPageTemplate() {
   return `
     <div id="content">
       <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+      <div class="order-actions"> 
+          <button id="sort-price-order">
+          Price
+          <i class="fa-solid fa-arrow-up-wide-short" id="sort-asc-price-order"></i>
+          <i class="fa-solid fa-arrow-down-short-wide hidden-icon" id="sort-desc-price-order"></i>
+          </button>
+      </div>
       <div class="orders flex items-center justify-center flex-wrap">
       </div>
     </div>
@@ -140,6 +147,8 @@ function renderOrdersPage() {
     setTimeout(() => {
     removeLoader();
   },loaderTime))
+
+  sortButtonsSetUp();
 
   
 }

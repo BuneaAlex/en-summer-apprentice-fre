@@ -15,7 +15,8 @@ module.exports = {
   'text-white', 
   'flex', 
   'flex-wrap', 
-  'items-center'
+  'items-center',
+  'hidden'
 ],
   theme: {
     extend: {

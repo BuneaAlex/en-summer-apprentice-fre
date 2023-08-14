@@ -97,7 +97,7 @@
     margin-top: 5rem;
 }
 
-.event-filters
+.event-filters, .order-actions
 {
     display: flex;
     flex-direction: row;
