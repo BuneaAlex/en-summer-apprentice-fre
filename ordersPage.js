@@ -1,6 +1,7 @@
 import { useStyles } from "./src/components/styles";
 import { getEventById } from "./src/api_calls/events_calls";
 import { generateTicketOptions } from './helperFunctions';
+import { DeleteOrder } from "./src/api_calls/orders_calls";
 
 export function addOrders(orderData)
 {
@@ -79,6 +80,12 @@ export function addOrders(orderData)
     ticketsInput.addEventListener("change",() => {
       orderChangeHandler(ticketCategorySelect,ticketsInput,updateButton);
     });
+
+    deleteButton.addEventListener("click", () => {
+      DeleteOrder(order.orderID).then(data => console.log("deleted",data));
+      ordersContainer.removeChild(orderCard);
+    });
+
   });
   
 }

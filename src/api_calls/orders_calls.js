@@ -1,4 +1,4 @@
-import { JAVA_SERVER_ORDERS_BASE_URL} from "./consts";
+import { JAVA_SERVER_ORDERS_BASE_URL, NET_SERVER_ORDERS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
 export async function addOrder(order){
@@ -49,5 +49,30 @@ export async function getAllOrders()
             console.log('Request failed', error);
             return Promise.reject(error);
         });
+}
+
+export function DeleteOrder(id){
+    console.log('inainte de fetch delete')
+    let headers = new Headers();
+    headers.append("Accept", "application/json");
+
+    let options = { method: 'DELETE',
+        headers: headers,
+        mode: 'cors'
+    };
+
+    const url=NET_SERVER_ORDERS_BASE_URL+'/'+id;
+    
+    return fetch(url,options)
+        .then(status)
+        .then(json)
+        .then(response=>{
+            console.log('Delete status '+response.status);
+            return response;
+        }).catch(e=>{
+            console.log('error '+e);
+            return Promise.reject(e);
+        });
+
 }
 
