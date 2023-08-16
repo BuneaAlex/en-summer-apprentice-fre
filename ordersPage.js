@@ -85,7 +85,6 @@ export function addOrders(orderData)
     deleteButton.addEventListener("click", () => {
       deleteOrder(order.orderID).then(data => 
         {
-          console.log("deleted",data)
           ordersContainer.removeChild(orderCard);
         });
     });
@@ -99,7 +98,7 @@ export function addOrders(orderData)
       }
       updateOrder(order.orderID,patchRequestBody)
       .then(data => {
-        console.log("updated",data)
+        
         ticketsInput.setAttribute('data-initial-value', data.numberOfTickets);
         ticketCategorySelect.setAttribute('data-initial-value', data.ticketCategory.description);
         disableButton(updateButton);
