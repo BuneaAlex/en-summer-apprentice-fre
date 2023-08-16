@@ -62,10 +62,10 @@ function getOrdersPageTemplate() {
 }
 
 function getLoginPageTemplate() {
-  return `<div>
+  return `<div id="content">
   <form>
     <div class="login-container">
-    <h2>Login form</h2>
+    <h2 class="text-xl font-bold text-center text-gray-800 mb-6">Login form</h2>
     <input
       type="text"
       placeholder="Email"
@@ -172,6 +172,13 @@ function renderLoginPage() {
   if (menuNav) {
     menuNav.style.display = "none";
   }
+
+  var contentContainer = document.getElementById("content");
+  contentContainer.classList.add(...useStyles('flex_center_container'))
+
+  var loginContainer = document.getElementsByClassName("login-container")[0];
+  loginContainer.classList.add(...useStyles('standard_form','flex_center_container'));
+
 
   // Add event listener to the login button
   loginButton.addEventListener("click", handleLogin);
