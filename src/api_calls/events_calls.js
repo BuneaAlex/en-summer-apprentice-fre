@@ -1,7 +1,7 @@
 import { JAVA_SERVER_EVENTS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
-export async function getAllEvents() 
+export function getAllEvents() 
 {
     
     var headers = new Headers();
@@ -25,7 +25,7 @@ export async function getAllEvents()
         });
 }
 
-export async function getEventById(id) 
+export function getEventById(id) 
 {
     
     var headers = new Headers();
@@ -52,7 +52,7 @@ export async function getEventById(id)
 }
 
 
-export async function getEventsFiltered(eventType,venueType) 
+export function getEventsFiltered(eventType,venueType) 
 {
  
     var headers = new Headers();

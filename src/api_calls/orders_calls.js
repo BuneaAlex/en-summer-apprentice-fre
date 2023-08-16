@@ -1,7 +1,7 @@
 import { JAVA_SERVER_ORDERS_BASE_URL, NET_SERVER_ORDERS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
-export async function addOrder(order){
+export function addOrder(order){
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
@@ -26,7 +26,7 @@ export async function addOrder(order){
 }
 
 
-export async function getAllOrders() 
+export function getAllOrders() 
 {
     
     var headers = new Headers();
@@ -50,7 +50,7 @@ export async function getAllOrders()
         });
 }
 
-export async function deleteOrder(id){
+export function deleteOrder(id){
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
@@ -75,7 +75,7 @@ export async function deleteOrder(id){
 
 }
 
-export async function updateOrder(id,patchRequestBody){
+export function updateOrder(id,patchRequestBody){
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
