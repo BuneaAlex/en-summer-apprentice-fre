@@ -104,6 +104,15 @@ function setupMobileMenuEvent() {
       mobileMenu.classList.toggle('hidden');
     });
   }
+
+  const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+  mobileMenuLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const href = link.getAttribute('href');
+      navigateTo(href);
+    });
+  });
 }
 
 function setupPopstateEvent() {

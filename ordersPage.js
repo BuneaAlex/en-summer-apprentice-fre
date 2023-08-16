@@ -102,7 +102,7 @@ export function addOrders(orderData)
         ticketsInput.setAttribute('data-initial-value', data.numberOfTickets);
         ticketCategorySelect.setAttribute('data-initial-value', data.ticketCategory.description);
         disableButton(updateButton);
-        var priceParagraph = eventDescription.querySelector('p:nth-child(5)');
+        let priceParagraph = eventDescription.querySelector('p:nth-child(5)');
         priceParagraph.innerHTML = "Price:" +  data.totalPrice + "$";
         toastr.success('Success!');
       });

@@ -2,7 +2,6 @@ import { JAVA_SERVER_ORDERS_BASE_URL, NET_SERVER_ORDERS_BASE_URL} from "./consts
 import {authenticationHeaderSetter,status,json} from "./utils";
 
 export async function addOrder(order){
-    console.log('inainte de fetch post'+JSON.stringify(order));
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
@@ -77,7 +76,6 @@ export function deleteOrder(id){
 }
 
 export function updateOrder(id,patchRequestBody){
-    console.log('inainte de fetch post'+JSON.stringify(patchRequestBody));
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
