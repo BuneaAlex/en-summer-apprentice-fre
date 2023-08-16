@@ -78,3 +78,7 @@ h1 {
   margin-bottom: 40px;
 }
 
+.hidden-icon {
+  display: none !important;
+}
+

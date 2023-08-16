@@ -2,9 +2,10 @@ import { getAllEvents } from "./src/api_calls/events_calls";
 import { getAllOrders } from "./src/api_calls/orders_calls";
 import { addLoader, removeLoader, removeLoaderForLogin } from "./src/components/loader";
 import { useStyles } from "./src/components/styles";
-import { addOrders } from "./ordersPage";
+import { addOrders, sortButtonsSetUp } from "./ordersPage";
 import { addEvents, eventNameFilterSetUp, eventTypeSelectsListenerSetUp } from "./eventsPage";
 import { eventTypeSelectsSetUp } from "./helperFunctions";
+import { authenticationHeaderSetter, handleLogout } from "./src/api_calls/utils";
 
 const loaderTime = 1000;
 let events = [];
@@ -42,6 +43,19 @@ function getOrdersPageTemplate() {
   return `
     <div id="content">
       <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
+      <div class="order-sort"> 
+          <button id="sort-price-order">
+          Price
+          <i class="fa-solid fa-arrow-up-wide-short" id="sort-asc-price-order"></i>
+          <i class="fa-solid fa-arrow-down-short-wide hidden-icon" id="sort-desc-price-order"></i>
+          </button>
+
+          <button id="sort-name-order">
+          Name
+          <i class="fa-solid fa-arrow-up-wide-short" id="sort-asc-name-order"></i>
+          <i class="fa-solid fa-arrow-down-short-wide hidden-icon" id="sort-desc-name-order"></i>
+          </button>
+      </div>
       <div class="orders flex items-center justify-center flex-wrap">
       </div>
     </div>
@@ -49,10 +63,10 @@ function getOrdersPageTemplate() {
 }
 
 function getLoginPageTemplate() {
-  return `<div>
+  return `<div id="content">
   <form>
     <div class="login-container">
-    <h2>Login form</h2>
+    <h2 class="text-xl font-bold text-center text-gray-800 mb-6">Login form</h2>
     <input
       type="text"
       placeholder="Email"
@@ -80,6 +94,12 @@ function setupNavigationEvents() {
       navigateTo(href);
     });
   });
+
+  const logoutButton = document.getElementById('logoutButton');
+  logoutButton.addEventListener('click',() => {
+     navigateTo('/login');
+     localStorage.clear();
+  })
 }
 
 function setupMobileMenuEvent() {
@@ -91,6 +111,15 @@ function setupMobileMenuEvent() {
       mobileMenu.classList.toggle('hidden');
     });
   }
+
+  const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+  mobileMenuLinks.forEach((link) => {
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      const href = link.getAttribute('href');
+      navigateTo(href);
+    });
+  });
 }
 
 function setupPopstateEvent() {
@@ -141,6 +170,8 @@ function renderOrdersPage() {
     removeLoader();
   },loaderTime))
 
+  sortButtonsSetUp();
+
   
 }
 
@@ -157,6 +188,13 @@ function renderLoginPage() {
   if (menuNav) {
     menuNav.style.display = "none";
   }
+
+  var contentContainer = document.getElementById("content");
+  contentContainer.classList.add(...useStyles('flex_center_container'))
+
+  var loginContainer = document.getElementsByClassName("login-container")[0];
+  loginContainer.classList.add(...useStyles('standard_form','flex_center_container'));
+
 
   // Add event listener to the login button
   loginButton.addEventListener("click", handleLogin);

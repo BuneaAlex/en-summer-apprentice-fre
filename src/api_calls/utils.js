@@ -18,3 +18,28 @@ export function authenticationHeaderSetter(headers)
     let encodedCredentials = btoa(username + ':' + password);
     headers.append('Authorization', 'Basic ' + encodedCredentials);
 }
+
+export async function handleLogout()
+{
+  var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    authenticationHeaderSetter(headers);
+
+    let options = { method: 'GET',
+    headers: headers,
+     mode: 'cors'
+    };
+
+    const url = 'http://localhost:8080/management/logout';
+
+    return await fetch(url,options)
+        .then(status)
+        .then(data=> {
+            console.log('Request succeeded with JSON response', data);
+            return data;
+        }).catch(error=>{
+            console.log('Request failed', error);
+            return Promise.reject(error);
+        });
+    
+}

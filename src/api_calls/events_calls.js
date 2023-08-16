@@ -1,7 +1,7 @@
 import { JAVA_SERVER_EVENTS_BASE_URL} from "./consts";
 import {authenticationHeaderSetter,status,json} from "./utils";
 
-export async function getAllEvents() 
+export function getAllEvents() 
 {
     
     var headers = new Headers();
@@ -13,7 +13,7 @@ export async function getAllEvents()
      mode: 'cors'
     };
 
-    return await fetch(JAVA_SERVER_EVENTS_BASE_URL,options)
+    return fetch(JAVA_SERVER_EVENTS_BASE_URL,options)
         .then(status)
         .then(json)
         .then(data=> {
@@ -25,7 +25,7 @@ export async function getAllEvents()
         });
 }
 
-export async function getEventById(id) 
+export function getEventById(id) 
 {
     
     var headers = new Headers();
@@ -39,7 +39,7 @@ export async function getEventById(id)
 
     const url = JAVA_SERVER_EVENTS_BASE_URL + "/" + id;
 
-    return await fetch(url,options)
+    return fetch(url,options)
         .then(status)
         .then(json)
         .then(data=> {
@@ -52,7 +52,7 @@ export async function getEventById(id)
 }
 
 
-export async function getEventsFiltered(eventType,venueType) 
+export function getEventsFiltered(eventType,venueType) 
 {
  
     var headers = new Headers();
@@ -80,7 +80,7 @@ export async function getEventsFiltered(eventType,venueType)
     const url = `${JAVA_SERVER_EVENTS_BASE_URL}${queryString}`;
 
 
-    return await fetch(url,options)
+    return fetch(url,options)
         .then(status)
         .then(json)
         .then(data=> {
