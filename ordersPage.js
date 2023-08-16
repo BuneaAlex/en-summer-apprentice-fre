@@ -28,7 +28,7 @@ export function addOrders(orderData)
         const ticketType = order.ticketCategory.description;
         const ticketOption = ticketCategorySelect.querySelector(`option[value=${ticketType}]`);
         ticketOption.selected = true;
-        ticketCategorySelect.setAttribute('data-initial-value', ticketType);
+        ticketCategorySelect.setAttribute('data-initial-value', ticketType);  
       }
       
       )

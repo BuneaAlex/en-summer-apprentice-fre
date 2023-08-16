@@ -13,7 +13,7 @@ export async function addOrder(order){
         mode: 'cors',
         body: JSON.stringify(order)};
 
-    return await fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
+    return fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
         .then(status)
         .then(json)
         .then(response=>{
@@ -38,7 +38,7 @@ export async function getAllOrders()
      mode: 'cors'
     };
 
-    return await fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
+    return fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
         .then(status)
         .then(json)
         .then(data=> {
@@ -50,7 +50,7 @@ export async function getAllOrders()
         });
 }
 
-export function deleteOrder(id){
+export async function deleteOrder(id){
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
@@ -75,7 +75,7 @@ export function deleteOrder(id){
 
 }
 
-export function updateOrder(id,patchRequestBody){
+export async function updateOrder(id,patchRequestBody){
 
     let headers = new Headers();
     headers.append("Accept", "application/json");
