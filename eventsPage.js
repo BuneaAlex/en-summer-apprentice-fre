@@ -50,7 +50,7 @@ export function addEvents(eventData) {
       ticketsInput.name = 'tickets';
       ticketsInput.value = '0';
       ticketsInput.min = '1';
-      ticketsInput.max = '10';
+      ticketsInput.max = '100';
   
       const priceLabel = document.createElement('p');
       priceLabel.textContent = 'Price:-';
@@ -98,16 +98,23 @@ export function addEvents(eventData) {
         }
       
         try {
-          await addOrder(order)
-          .then(data => 
-          {
-            ticketsInput.value = 0;
-            priceLabel.innerText = "Price:-";
-            toastr.success('Success!');
-          }
-          );
-            
-        } catch (error) {
+          addOrder(order).then(
+            response => {
+              if (response.ok) {
+                
+                ticketsInput.value = 0;
+                priceLabel.innerText = "Price:-";
+                toastr.success('Success!');
+              } else {
+                response.json().then(errorData => {
+                  alert(errorData.message);
+                });
+                
+              }
+            }
+          )   
+        }  
+         catch (error) {
           console.error('Error adding order:', error);
         }
       });

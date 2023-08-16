@@ -14,14 +14,11 @@ export function addOrder(order){
         body: JSON.stringify(order)};
 
     return fetch(JAVA_SERVER_ORDERS_BASE_URL,options)
-        .then(status)
-        .then(json)
-        .then(response=>{
-            console.log('Request succeeded with JSON response', response);
+        .then(response => {
             return response;
-        }).catch(error=>{
-            console.log('Request failed', error);
-            return Promise.reject(error);
+        })
+        .catch(error => {
+            console.error(error.message);
         });
 }
 
@@ -66,7 +63,6 @@ export function deleteOrder(id){
         .then(status)
         .then(json)
         .then(response=>{
-            console.log('Delete status '+response.status);
             return response;
         }).catch(e=>{
             console.log('error '+e);
@@ -89,8 +85,6 @@ export function updateOrder(id,patchRequestBody){
     const url=NET_SERVER_ORDERS_BASE_URL+'/'+id;
 
     return fetch(url,options)
-        .then(status)
-        .then(json)
         .then(response=>{
             return response;
         }).catch(error=>{
