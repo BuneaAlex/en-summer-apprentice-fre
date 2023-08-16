@@ -51,8 +51,8 @@ export async function getAllOrders()
         });
 }
 
-export function DeleteOrder(id){
-    console.log('inainte de fetch delete')
+export function deleteOrder(id){
+
     let headers = new Headers();
     headers.append("Accept", "application/json");
 
@@ -76,7 +76,7 @@ export function DeleteOrder(id){
 
 }
 
-export function UpdateOrder(id,patchRequestBody){
+export function updateOrder(id,patchRequestBody){
     console.log('inainte de fetch post'+JSON.stringify(patchRequestBody));
 
     let headers = new Headers();

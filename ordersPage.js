@@ -1,7 +1,7 @@
 import { useStyles } from "./src/components/styles";
 import { getEventById } from "./src/api_calls/events_calls";
 import { generateTicketOptions } from './helperFunctions';
-import { DeleteOrder, UpdateOrder } from "./src/api_calls/orders_calls";
+import { deleteOrder, updateOrder } from "./src/api_calls/orders_calls";
 import { genericSortElements } from "./genericDivSort";
 
 export function addOrders(orderData)
@@ -83,8 +83,11 @@ export function addOrders(orderData)
     });
 
     deleteButton.addEventListener("click", () => {
-      DeleteOrder(order.orderID).then(data => console.log("deleted",data));
-      ordersContainer.removeChild(orderCard);
+      deleteOrder(order.orderID).then(data => 
+        {
+          console.log("deleted",data)
+          ordersContainer.removeChild(orderCard);
+        });
     });
 
     updateButton.addEventListener("click", () => {
@@ -94,7 +97,7 @@ export function addOrders(orderData)
         numberOfTickets: numberOfTickets,
         ticketType: ticketCategory
       }
-      UpdateOrder(order.orderID,patchRequestBody)
+      updateOrder(order.orderID,patchRequestBody)
       .then(data => {
         console.log("updated",data)
         ticketsInput.setAttribute('data-initial-value', data.numberOfTickets);
