@@ -98,6 +98,7 @@ function setupNavigationEvents() {
   const logoutButton = document.getElementById('logoutButton');
   logoutButton.addEventListener('click',() => {
      navigateTo('/login');
+     localStorage.clear();
   })
 }
 
