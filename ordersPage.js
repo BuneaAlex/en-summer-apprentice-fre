@@ -112,7 +112,7 @@ export function addOrders(orderData)
 
         } else {
           response.json().then(errorData => {
-            alert(errorData.errorMessage);
+            toastr.warning(errorData.errorMessage);
           });
         }  
         
