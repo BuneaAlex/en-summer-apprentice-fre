@@ -107,7 +107,7 @@ export function addEvents(eventData) {
                 toastr.success('Success!');
               } else {
                 response.json().then(errorData => {
-                  alert(errorData.message);
+                  toastr.warning(errorData.message);
                 });
                 
               }
