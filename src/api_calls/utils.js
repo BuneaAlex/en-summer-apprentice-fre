@@ -19,7 +19,7 @@ export function authenticationHeaderSetter(headers)
     headers.append('Authorization', 'Basic ' + encodedCredentials);
 }
 
-export async function handleLogout()
+export function handleLogout()
 {
   var headers = new Headers();
     headers.append('Accept', 'application/json');
@@ -32,7 +32,7 @@ export async function handleLogout()
 
     const url = 'http://localhost:8080/management/logout';
 
-    return await fetch(url,options)
+    return fetch(url,options)
         .then(status)
         .then(data=> {
             console.log('Request succeeded with JSON response', data);

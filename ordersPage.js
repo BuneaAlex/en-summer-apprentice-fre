@@ -29,10 +29,11 @@ export function addOrders(orderData)
         const ticketOption = ticketCategorySelect.querySelector(`option[value=${ticketType}]`);
         ticketOption.selected = true;
         ticketCategorySelect.setAttribute('data-initial-value', ticketType);  
+        orderCard.insertBefore(eventDescription,orderCard.firstChild);
       }
       
       )
-    orderCard.appendChild(eventDescription);
+    
 
     const ticketNumberSelectDiv = document.createElement('div');
     ticketNumberSelectDiv.classList.add("ticket-number-select");
