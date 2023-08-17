@@ -97,14 +97,25 @@ export function addOrders(orderData)
         ticketType: ticketCategory
       }
       updateOrder(order.orderID,patchRequestBody)
-      .then(data => {
+      .then(response => {
+
+        if (response.ok) {
+
+            response.json().then(data => {
+              ticketsInput.setAttribute('data-initial-value', data.numberOfTickets);
+              ticketCategorySelect.setAttribute('data-initial-value', data.ticketCategory.description);
+              disableButton(updateButton);
+              let priceParagraph = eventDescription.querySelector('p:nth-child(5)');
+              priceParagraph.innerHTML = "Price:" +  data.totalPrice + "$";
+              toastr.success('Success!');
+            })   
+
+        } else {
+          response.json().then(errorData => {
+            toastr.warning(errorData.errorMessage);
+          });
+        }  
         
-        ticketsInput.setAttribute('data-initial-value', data.numberOfTickets);
-        ticketCategorySelect.setAttribute('data-initial-value', data.ticketCategory.description);
-        disableButton(updateButton);
-        let priceParagraph = eventDescription.querySelector('p:nth-child(5)');
-        priceParagraph.innerHTML = "Price:" +  data.totalPrice + "$";
-        toastr.success('Success!');
       });
     });
 
