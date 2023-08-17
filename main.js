@@ -5,7 +5,6 @@ import { useStyles } from "./src/components/styles";
 import { addOrders, sortButtonsSetUp } from "./ordersPage";
 import { addEvents, eventNameFilterSetUp, eventTypeSelectsListenerSetUp } from "./eventsPage";
 import { eventTypeSelectsSetUp } from "./helperFunctions";
-import { authenticationHeaderSetter, handleLogout } from "./src/api_calls/utils";
 
 const loaderTime = 1000;
 let events = [];
