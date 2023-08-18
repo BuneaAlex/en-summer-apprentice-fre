@@ -185,7 +185,7 @@ function renderOrdersPage() {
 
   sortButtonsSetUp();
 
-  
+
 }
 
 
@@ -243,8 +243,16 @@ async function handleLogin()
       }
 
 
-    } else {
-      console.error('Login error:', response.statusText);
+    } 
+    else {
+        if (response.status === 401) {
+          
+          const errorText = await response.text();
+          toastr.error('Authentication failed: ' +  errorText);
+        } else {
+          
+          console.log('An error occurred:', response.status);
+        }
     }
   } catch (error) {
     console.error('Fetch error:', error);
