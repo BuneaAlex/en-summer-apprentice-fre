@@ -7,6 +7,7 @@ import { genericSortElements } from "./genericDivSort";
 export function addOrders(orderData)
 {
   const ordersContainer = document.querySelector('.orders');
+  ordersContainer.innerHTML='';
   orderData.forEach(order => {
     const orderCard = document.createElement('div');
     orderCard.classList.add('order-card', 'rounded-lg', 'bg-gray-200', 'p-4','m-4');
