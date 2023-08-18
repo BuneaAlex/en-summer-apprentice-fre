@@ -1,13 +1,14 @@
-import { getAllEvents } from "./src/api_calls/events_calls";
+import { getAllEvents, getEventsByPage } from "./src/api_calls/events_calls";
 import { getAllOrders } from "./src/api_calls/orders_calls";
 import { addLoader, removeLoader, removeLoaderForLogin } from "./src/components/loader";
 import { useStyles } from "./src/components/styles";
 import { addOrders, sortButtonsSetUp } from "./ordersPage";
-import { addEvents, eventNameFilterSetUp, eventTypeSelectsListenerSetUp } from "./eventsPage";
+import { addEvents, eventNameFilterSetUp, eventTypeSelectsListenerSetUp, paginationButtonsSetUp } from "./eventsPage";
 import { eventTypeSelectsSetUp } from "./helperFunctions";
 
-const loaderTime = 1000;
-let events = [];
+export const loaderTime = 1000;
+export const pageSize = 4;
+
 // Navigate to a specific URL
 function navigateTo(url) {
   history.pushState(null, null, url);
@@ -33,6 +34,14 @@ function getHomePageTemplate() {
     </div>
       <div class="events flex items-center justify-center flex-wrap">
       </div>
+      <div class="event-pagination-buttons flex items-center justify-center space-x-4">
+          <button id="back-event-page">
+              <i class="fa-solid fa-arrow-left fa-2xl" style="color: #de411b;"></i>
+          </button>
+          <button id="forward-event-page">
+              <i class="fa-solid fa-arrow-right fa-2xl" style="color: #de411b;"></i>
+          </button>
+      </div>
     </div>
   `;
   
@@ -42,7 +51,7 @@ function getOrdersPageTemplate() {
   return `
     <div id="content">
       <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
-      <div class="order-sort"> 
+      <div class="order-sort space-x-4"> 
           <button id="sort-price-order">
           Price
           <i class="fa-solid fa-arrow-up-wide-short" id="sort-asc-price-order"></i>
@@ -144,13 +153,18 @@ function renderHomePage() {
   .then(data => {
     eventTypeSelectsSetUp(data);
     eventNameFilterSetUp(data);
-    addEvents(data)
-  }).finally(
-    setTimeout(() => {
-    removeLoader();
-  },loaderTime));
+  })
+
+  getEventsByPage(1,pageSize)
+    .then(data => {
+      addEvents(data)
+    }).finally(
+      setTimeout(() => {
+      removeLoader();
+    },loaderTime));
 
   eventTypeSelectsListenerSetUp();
+  paginationButtonsSetUp();
 }
 
 
@@ -171,7 +185,7 @@ function renderOrdersPage() {
 
   sortButtonsSetUp();
 
-  
+
 }
 
 
@@ -229,8 +243,16 @@ async function handleLogin()
       }
 
 
-    } else {
-      console.error('Login error:', response.statusText);
+    } 
+    else {
+        if (response.status === 401) {
+          
+          const errorText = await response.text();
+          toastr.error('Authentication failed: ' +  errorText);
+        } else {
+          
+          console.log('An error occurred:', response.status);
+        }
     }
   } catch (error) {
     console.error('Fetch error:', error);

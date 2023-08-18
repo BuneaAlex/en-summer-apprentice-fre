@@ -91,3 +91,30 @@ export function getEventsFiltered(eventType,venueType)
             return Promise.reject(error);
         });
 }
+
+
+export function getEventsByPage(pageNumber,pageSize) 
+{
+    
+    var headers = new Headers();
+    headers.append('Accept', 'application/json');
+    authenticationHeaderSetter(headers);
+
+    let options = { method: 'GET',
+    headers: headers,
+     mode: 'cors'
+    };
+
+    const url = JAVA_SERVER_EVENTS_BASE_URL + "/page?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+
+    return fetch(url,options)
+        .then(status)
+        .then(json)
+        .then(data=> {
+            console.log('Request succeeded with JSON response', data);
+            return data;
+        }).catch(error=>{
+            console.log('Request failed', error);
+            return Promise.reject(error);
+        });
+}

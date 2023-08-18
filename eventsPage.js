@@ -1,7 +1,11 @@
 import { addOrder } from "./src/api_calls/orders_calls";
 import { generateTicketOptions, eventTypeSelectsReset } from './helperFunctions';
 import { useStyles } from "./src/components/styles";
-import { getEventsFiltered } from "./src/api_calls/events_calls";
+import { getEventsByPage, getEventsFiltered } from "./src/api_calls/events_calls";
+import { loaderTime, pageSize } from "./main";
+import { addLoader, removeLoader } from "./src/components/loader";
+
+var currentPage = 1;
 
 export function addEvents(eventData) {
     const eventsContainer = document.querySelector('.events');
@@ -135,16 +139,33 @@ function modifyPrice(eventObject,ticketCategorySelect,ticketsInput,priceLabel) {
   priceLabel.innerText = "Price:" + selectedTicketNumber*price;
 }
 
-export function filterEventByTypes()
+function filterEventByTypes()
 {
     const eventTypeSelect = document.getElementById('event-type-select');
     const venueTypeSelect = document.getElementById('venue-type-select');
 
-    const eventType = eventTypeSelect.value;
-    const venueType = venueTypeSelect.value;
 
-    getEventsFiltered(eventType,venueType)
-    .then(data => addEvents(data)) 
+    if (eventTypeSelect.selectedIndex === 0 && venueTypeSelect.selectedIndex === 0) {
+      paginationButtonsEnable()
+      addLoader();
+      getEventsByPage(currentPage,pageSize)
+      .then(data => {
+        addEvents(data)
+      }).finally(
+        setTimeout(() => {
+        removeLoader();
+      },loaderTime));
+    }
+    else
+    {
+      paginationButtonsDisable()
+      const eventType = eventTypeSelect.value;
+      const venueType = venueTypeSelect.value;
+  
+      getEventsFiltered(eventType,venueType)
+      .then(data => addEvents(data)) 
+    }
+    
 }
 
 export function eventTypeSelectsListenerSetUp()
@@ -182,12 +203,98 @@ export function eventNameFilterSetUp(events)
 
           if(filterValue !== undefined && events !== undefined)
           {
+            if (filterValue.trim() === '')
+            {
+                paginationButtonsEnable()
+                getEventsByPage(currentPage,pageSize)
+                .then(data => {
+                  addEvents(data)
+                }).finally(
+                  setTimeout(() => {
+                  removeLoader();
+                },loaderTime));
+            }
+            else
+            {
+              paginationButtonsDisable()
               const filteredEvents = events.filter((event) => event.name.toLowerCase().includes(filterValue.toLowerCase()));
               addEvents(filteredEvents);
+            } 
           }
         }, filterInterval);
       })
   }
 }
 
-  
+function paginationButtonsDisable()
+{
+  const backEventPageButton = document.getElementById("back-event-page");
+  const forwardEventPageButton = document.getElementById("forward-event-page");
+
+  backEventPageButton.disabled = true;
+  forwardEventPageButton.disabled = true;
+}
+
+function paginationButtonsEnable()
+{
+  const backEventPageButton = document.getElementById("back-event-page");
+  const forwardEventPageButton = document.getElementById("forward-event-page");
+
+  backEventPageButton.disabled = false;
+  forwardEventPageButton.disabled = false;
+}
+
+export function paginationButtonsSetUp()
+{
+    const backEventPageButton = document.getElementById("back-event-page");
+    const forwardEventPageButton = document.getElementById("forward-event-page");
+
+    backEventPageButton.addEventListener('click', () => {
+        loadPreviousPage();
+    });
+
+    forwardEventPageButton.addEventListener('click', () => {
+      loadNextPage()
+    });
+}
+
+
+
+async function loadNextPage() {
+  try {
+    addLoader();
+    const data = await getEventsByPage(currentPage + 1, pageSize);
+
+    if (data.length === 0) {
+      toastr.warning("No more events...");
+    } else {
+      currentPage += 1;
+      addEvents(data);
+    }
+  } catch (error) {
+    console.error("An error occurred:", error);
+  } finally {
+    setTimeout(() => {
+      removeLoader();
+    }, loaderTime);
+  }
+}
+
+async function loadPreviousPage()
+{
+  if (currentPage > 1) {
+    currentPage -= 1;
+    addLoader();
+
+    try {
+      const data = await getEventsByPage(currentPage, pageSize);
+      addEvents(data);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    } finally {
+      setTimeout(() => {
+        removeLoader();
+      }, loaderTime);
+    }
+  }
+}
