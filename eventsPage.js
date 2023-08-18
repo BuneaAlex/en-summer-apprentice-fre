@@ -250,7 +250,7 @@ export function paginationButtonsSetUp()
     const forwardEventPageButton = document.getElementById("forward-event-page");
 
     backEventPageButton.addEventListener('click', () => {
-        loadLastPage();
+        loadPreviousPage();
     });
 
     forwardEventPageButton.addEventListener('click', () => {
@@ -280,7 +280,7 @@ async function loadNextPage() {
   }
 }
 
-async function loadLastPage()
+async function loadPreviousPage()
 {
   if (currentPage > 1) {
     currentPage -= 1;

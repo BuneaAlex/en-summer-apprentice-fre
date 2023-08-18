@@ -51,7 +51,7 @@ function getOrdersPageTemplate() {
   return `
     <div id="content">
       <h1 class="text-2xl mb-4 mt-8 text-center">Purchased Tickets</h1>
-      <div class="order-sort"> 
+      <div class="order-sort space-x-4"> 
           <button id="sort-price-order">
           Price
           <i class="fa-solid fa-arrow-up-wide-short" id="sort-asc-price-order"></i>
